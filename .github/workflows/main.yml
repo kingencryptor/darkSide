@@ -1,0 +1,56 @@
+name: startEngine-Now
+
+on:
+  workflow_dispatch:
+    inputs:
+      email:
+        description: 'email'
+        required: true
+        default: 'kingencryptor@protonmail.ch'
+      username:
+        description: 'username'
+        required: true
+        default: 'kingencryptor'
+      commit:
+        description: 'Commit'
+        required: true
+        default: ':recycle: Triskele!'
+      limit:
+        description: 'limitCommit'
+        required: true
+        default: "10"
+  push:
+    branches:
+      - main
+
+jobs:
+  auto_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2      
+        with:
+         persist-credentials: false
+         fetch-depth: 0
+      
+      - name: Set Config
+        run: |
+          git config --local user.email "${{ github.event.inputs.email }}"
+          git config --local user.name "${{ github.event.inputs.username }}"
+
+      - name: DO It
+        run: |
+          for i in {0..${{ github.event.inputs.limit }}}
+          do
+            cat > LOG1
+            d=$i+`date '+%Y-%m-%dT%H:%M:%SZ'`
+            echo $d > LOG1
+            git add -A
+            git commit -m "${{ github.event.inputs.commit }}"
+          done
+          
+      - name: GitHub Push
+        uses: ad-m/github-push-action@v0.5.0
+        with:
+          force: true
+          directory: "."
+          github_token: ${{ secrets.GITHUB_TOKEN }}
