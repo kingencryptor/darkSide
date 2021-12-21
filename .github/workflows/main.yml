@@ -39,11 +39,11 @@ jobs:
 
       - name: DO It
         run: |
-          for i in {0..${{ github.event.inputs.limit }}}
+          a=$(seq 1 ${{ github.event.inputs.limit }})
+          for i in $a
           do
-            cat > LOG1
-            d=$i+`date '+%Y-%m-%dT%H:%M:%SZ'`
-            echo $d > LOG1
+            y=$i+`date '+%Y-%m-%dT%H:%M:%SZ'`
+            echo $y > LOG$i
             git add -A
             git commit -m "${{ github.event.inputs.commit }}"
           done
